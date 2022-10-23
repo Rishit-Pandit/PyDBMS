@@ -4,7 +4,7 @@ PyDBMS is an initiative to make a Database Management Software in Python to aid 
 This is a GUI Client that take SQL like single lined text based commands to Create, Update and Retrive Data to and from the Databases.  
 The GUI Client appears as such with an Input Text Area and an Output Text Area:  
 
-![The GUI Client](/images/GUIClient.jpg "GUI Client")
+![The GUI Client](/GUIClient.jpg "GUI Client")
 
 ## Basic Fuctionalities
 
