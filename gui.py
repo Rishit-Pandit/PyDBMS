@@ -84,6 +84,10 @@ class MainView(tk.Frame):
 		elif ArrayContains(commandArr, "SAVE"):
 			classType, name, filename = DecodeSaveCommand(commandArr)
 			self.OUTPUT.append(f"Saving Values of {classType} {name} in file {filename} ...")
+		elif ArrayContains(commandArr, "ALTER"):
+			Type, name, AlterType = DecodeAlterCommand(commandArr)
+			self.OUTPUT.append(f"{AlterType}ing field(s) to/from {Type} {name} ...")
+
 
 
 		self.OutputLog.delete("1.0", "end")
