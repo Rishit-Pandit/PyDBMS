@@ -84,17 +84,50 @@ def DecodeSaveCommand(commandArr):
 		table = TABLES[name]
 		with open(f'{filename}.csv', 'w') as file:
 			keys = list(table.columns.keys())
-			OUTPUT.append(keys)
-			for i in range(len(table.columns[keys[0]]['Values'])):
+			x = []
+			for key in keys:
+				x.append(key)
+				x.append(table.columns[key]["Params"])
+				x.append(table.columns[key]["Type"])
+				x.append(table.columns[key]["Values"])
+				for i in x:
+					file.write(str(i)+";")
+				file.write('\n')
 				x = []
-				for key in keys:
-					x.append(table.columns[key]['Values'][i])
-				OUTPUT.append(x)
-			for cols in OUTPUT:
-				for row in cols:
-					file.write(row + ", ")
-				file.write("\n")
 
+	return Type, name, filename
+
+
+def DecodeLoadCommand(commandArr):
+	# LOAD TABLE <TableName> FILE <fileName>
+	Type = commandArr[1]
+	name = str(commandArr[2]).upper()
+	filename = str(commandArr[4])
+	OUTPUT = []
+
+	if Type == "TABLE":
+		table = Table(name)
+		with open(f'{filename}.csv', newline='') as csvfile:
+			data = csv.reader(csvfile, delimiter=';', quotechar='\'')
+			arr = []
+			for row in data:
+				row.pop(-1)
+				arr = row
+				
+				field = arr[0]
+				params = arr[1]
+				valType = arr[2]
+				values = arr[3]
+
+				table.addColumn(field, valType, params)
+				values = values[1:-2]
+				values = stringToList(values)
+
+				table.columns[field]['Values'] = values
+
+		TABLES[name] = table
+		print(table.columns)
+				
 	return Type, name, filename
 
 
