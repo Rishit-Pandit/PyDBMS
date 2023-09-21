@@ -1,6 +1,6 @@
 from utils import *
 from decoders import *
-from tkinter import filedialog, Text
+from tkinter import *
 import tkinter as tk
 import os
 
@@ -71,48 +71,77 @@ class MainView(tk.Frame):
 		if ArrayContains(commandArr, "QUIT"):
 			self.OUTPUT.append("Exiting...")
 			quit()
-		elif ArrayContains(commandArr, "CREATE"):
+		elif commandArr[0] == "CREATE":
 			classType, name = DecodeCreateCommand(commandArr)
 			self.OUTPUT.append(f"Created {classType} {name}...")
-		elif ArrayContains(commandArr, "INSERT"):
+		elif commandArr[0] == "INSERT":
 			classType, name = DecodeInsertCommand(commandArr)
 			self.OUTPUT.append(f"Inserted Values in {classType} {name}...")
-		elif ArrayContains(commandArr, "SELECT"):
+		elif commandArr[0] == "SELECT":
 			classType, name, OUTPUT_ = DecodeSelectCommand(commandArr)
 			self.OUTPUT.append(f"Displaying Values of {classType} {name}...")
 			showResult(OUTPUT_, name)
-		elif ArrayContains(commandArr, "SAVE"):
+		elif commandArr[0] == "SAVE":
 			classType, name, filename = DecodeSaveCommand(commandArr)
 			self.OUTPUT.append(f"Saving Values of {classType} {name} in file {filename} ...")
-		elif ArrayContains(commandArr, "ALTER"):
+		elif commandArr[0] == "ALTER":
 			Type, name, AlterType = DecodeAlterCommand(commandArr)
 			self.OUTPUT.append(f"{AlterType}ing field(s) to/from {Type} {name} ...")
-
-
+		elif commandArr[0] == "LOAD":
+			classType, name, filename = DecodeLoadCommand(commandArr)
+			self.OUTPUT.append(f"Loading Values from {filename} into file {classType} {name} ...")
 
 		self.OutputLog.delete("1.0", "end")
 		self.OutputLog.pack()
 		for i in range(len(self.OUTPUT)):
 			self.OutputLog.insert(f"{i}.0", str(self.OUTPUT[-i]) + "\n")
 			self.OutputLog.pack()
-
       
 def showResult(OUTPUT, name):
-		resRoot = tk.Tk()
-		resRoot.title("Table View")
-		resultView = ResultsView(resRoot, name)
+	resRoot = tk.Tk()
+	resRoot.title("Table View")
+	resultView = Window(resRoot, OUTPUT)
+	resultView.load()
+	resultView.mainloop()
 
-		resultView.OutputLog.delete("1.0", "end")
-		resultView.OutputLog.pack()
 
-		for i in range(1, len(OUTPUT)):
-			resultView.OutputLog.insert(f"{i}.0", str(OUTPUT[i]) + "\n")
-			resultView.OutputLog.pack()
-
-		resultView.OutputLog.insert(f"{0}.0", str(OUTPUT[0]) + "\n")
-		resultView.OutputLog.pack()
-		resultView.mainloop()
-
+class Window(tk.Frame):
+	def __init__(self, master, OUTPUT):
+		super().__init__(master)
+		self.pack()
+		self.root = master
+		self.OUTPUT = OUTPUT
+		
+		self.Main = Frame(self.root)
+		self.top = Frame(self.Main)     
+		self.top.pack(padx = 5, pady = 5)
+		self.middle = Frame(self.Main)
+		
+		self.row = len(OUTPUT)
+		self.col = len(OUTPUT[0])
+		
+		self.cells = [[None for i in range(self.col)] for j in range(self.row)]
+ 
+		for i in range(self.row):
+			for j in range(self.col):
+				self.cells[i][j] = Entry(self.middle, width = 30)
+				self.cells[i][j].grid(row = i, column = j)
+ 
+		self.middle.pack(padx = 5, pady = 5)
+		self.bottom = Frame(self.Main)
+		self.bottom.pack(padx = 5, pady = 5, expand = True, fill = X)		
+		self.Main.pack(padx = 5, pady = 5, expand = True, fill = X)
+  
+	def load(self): 
+		self.clear()
+		for i in range(self.row):
+			for j in range(self.col):
+				self.cells[i][j].insert(0, self.OUTPUT[i][j])
+                 
+	def clear(self): 
+		for i in range(self.row):
+			for j in range(self.col):
+				self.cells[i][j].delete(0, 'end')
 
 root = tk.Tk()
 root.title("Py DBMS")
