@@ -69,8 +69,17 @@ SELECT * FROM TABLE <TableName>
 
 #### SAVE
 
-This command saves the Table in the Specified file in `.CSV` format.  
+This command saves a Table in the Specified file in `.CSV` format.  
 The SAVE command is used as such:  
 ```
 SAVE TABLE <TableName> FILE <FileName>
+```
+*NOTE: This command can only save one table per file.*
+
+#### LOAD
+
+This command loads a Table from the Specified file in `.CSV` format.  
+The LOAD command is used as such:  
+```
+LOAD TABLE <TableName> FILE <FileName>
 ```
