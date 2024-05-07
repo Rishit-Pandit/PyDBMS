@@ -83,3 +83,11 @@ The LOAD command is used as such:
 ```
 LOAD TABLE <TableName> FILE <FileName>
 ```
+
+#### ALTER
+
+This command can add or drop (delete) a field from the table as specified.  
+The LOAD command is used as such: 
+```
+ALTER TABLE <TableName> <AlterType> ( <fieldName> <dType> <defaultVal>... )
+```
