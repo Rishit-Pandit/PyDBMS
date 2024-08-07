@@ -63,40 +63,42 @@ class MainView(tk.Frame):
 
 	def executeCommand(self):
 		self.query = self.InputSpace.get("1.0", "end")
-		commandStr = self.query.upper().replace("\n", " ")
-		print(commandStr)
+		cmdArr = self.query.split('\n')
+		cmdArr.remove('')
+		
+		def classifyCommand(commandArr):		
+			if ArrayContains(commandArr, "QUIT"):
+				self.OUTPUT.append("Exiting...")
+				quit()
+			elif commandArr[0] == "CREATE":
+				classType, name = DecodeCreateCommand(commandArr)
+				self.OUTPUT.append(f"Created {classType} {name}...")
+			elif commandArr[0] == "INSERT":
+				classType, name = DecodeInsertCommand(commandArr)
+				self.OUTPUT.append(f"Inserted Values in {classType} {name}...")
+			elif commandArr[0] == "SELECT":
+				classType, name, OUTPUT_ = DecodeSelectCommand(commandArr)
+				self.OUTPUT.append(f"Displaying Values of {classType} {name}...")
+				showResult(OUTPUT_, name)
+			elif commandArr[0] == "SAVE":
+				classType, name, filename = DecodeSaveCommand(commandArr)
+				self.OUTPUT.append(f"Saving Values of {classType} {name} in file {filename} ...")
+			elif commandArr[0] == "ALTER":
+				Type, name, AlterType = DecodeAlterCommand(commandArr)
+				self.OUTPUT.append(f"{AlterType}ing field(s) to/from {Type} {name} ...")
+			elif commandArr[0] == "LOAD":
+				classType, name, filename = DecodeLoadCommand(commandArr)
+				self.OUTPUT.append(f"Loading Values from {filename} into file {classType} {name} ...")
 
-		commandArr = commandStr.split(' ')
-		commandArr.remove('')
-		if ArrayContains(commandArr, "QUIT"):
-			self.OUTPUT.append("Exiting...")
-			quit()
-		elif commandArr[0] == "CREATE":
-			classType, name = DecodeCreateCommand(commandArr)
-			self.OUTPUT.append(f"Created {classType} {name}...")
-		elif commandArr[0] == "INSERT":
-			classType, name = DecodeInsertCommand(commandArr)
-			self.OUTPUT.append(f"Inserted Values in {classType} {name}...")
-		elif commandArr[0] == "SELECT":
-			classType, name, OUTPUT_ = DecodeSelectCommand(commandArr)
-			self.OUTPUT.append(f"Displaying Values of {classType} {name}...")
-			showResult(OUTPUT_, name)
-		elif commandArr[0] == "SAVE":
-			classType, name, filename = DecodeSaveCommand(commandArr)
-			self.OUTPUT.append(f"Saving Values of {classType} {name} in file {filename} ...")
-		elif commandArr[0] == "ALTER":
-			Type, name, AlterType = DecodeAlterCommand(commandArr)
-			self.OUTPUT.append(f"{AlterType}ing field(s) to/from {Type} {name} ...")
-		elif commandArr[0] == "LOAD":
-			classType, name, filename = DecodeLoadCommand(commandArr)
-			self.OUTPUT.append(f"Loading Values from {filename} into file {classType} {name} ...")
+		for i in cmdArr:
+			classifyCommand(i.split(' '))
 
-		self.OutputLog.delete("1.0", "end")
-		self.OutputLog.pack()
-		for i in range(len(self.OUTPUT)):
-			self.OutputLog.insert(f"{i}.0", str(self.OUTPUT[-i]) + "\n")
+			self.OutputLog.delete("1.0", "end")
 			self.OutputLog.pack()
-      
+			for i in range(len(self.OUTPUT)):
+				self.OutputLog.insert(f"{i}.0", str(self.OUTPUT[-i]) + "\n")
+				self.OutputLog.pack()
+
 def showResult(OUTPUT, name):
 	resRoot = tk.Tk()
 	resRoot.title("Table View")

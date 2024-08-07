@@ -37,7 +37,8 @@ There are 5 Data Types:
 * **INT** - 0-9
 * **DATE** - 0-9,/
 * **CHAR** - a-z
-* **VARCHAR** - a-z, 0-9, !, @, #, $, %, ^, &, *, -, +, =, _
+* **VARCHAR** - a-z, 0-9, !, @, #, $, %, ^, &, *, -, +, =, _  
+
 
 ### Commands
 
@@ -55,7 +56,7 @@ CREATE TABLE <TableName> ( <field1> <dType1> <field2> <dType2> <field3> <dType3>
 This command is used to Insert Values into the respective Fields in a prexistant table.  
 The INSERT command is used as such:  
 ```
-INSERT TABLE <TableName> ( <field1> <field2> <field3>... ) ( <val1> <val2> <val3>... )
+INSERT TABLE <TableName> ( <val1> <val2> <val3>... )
 ```
 
 #### SELECT
@@ -86,8 +87,17 @@ LOAD TABLE <TableName> FILE <FileName>
 
 #### ALTER
 
-This command can add or drop (delete) a field from the table as specified.  
-The LOAD command is used as such: 
+This command can add, change or drop (delete) a field from the table as specified.  
+The ALTER command is used as such: 
 ```
-ALTER TABLE <TableName> <AlterType> ( <fieldName> <dType> <defaultVal>... )
+ALTER TABLE <TableName> ADD <fieldName> <dType> <defaultVal>
+ALTER TABLE <TableName> DROP <fieldName>
+ALTER TABLE <TableName> CHANGE <fieldName> <newFieldName> <dType>
 ```
+
+
+### Changelog
+#### V2 - 05/08/2024
++ Added the `ALTER ... CHANGE ...` command
++ Removed some redundant requirements for commands
++ Added Multi-Line Command / Multi-Command Support

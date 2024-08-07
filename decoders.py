@@ -24,28 +24,23 @@ def DecodeCreateCommand(commandArr):
 
 
 def DecodeInsertCommand(commandArr):
-	# INSERT TABLE <tableName> ( <field1> <field2> <field3>... ) ( <val1> <val2> <val3>... )
+	# INSERT TABLE <tableName> ( <val1> <val2> <val3>... )
 	insertType = commandArr[1]
 	name = str(commandArr[2]).upper()
 	
 	if insertType == "TABLE":
 		table = TABLES[name]
-		fillCol = []
 		fillRow = []
 		for i in range(
 				commandArr.index("(") + 1,
 				commandArr.index(")")
 				):
-			fillCol.append(commandArr[i])
-		for i in range(
-				commandArr.index("(", commandArr.index(")") + 1) + 1,
-				commandArr.index(")", commandArr.index(")") + 1)
-				):
 			fillRow.append(commandArr[i])
 		
-		print(fillCol + fillRow)
-		for i in range(len(fillCol)):
-			table.columns[fillCol[i]]['Values'].append(fillRow[i])
+		print(fillRow)
+		for i in range(len(table.columns.keys())):
+			print(list(table.columns.keys()))
+			table.columns[list(table.columns.keys())[i]]["Values"].append(fillRow[i])
 
 		TABLES[name] = table
 
@@ -132,7 +127,9 @@ def DecodeLoadCommand(commandArr):
 
 
 def DecodeAlterCommand(commandArr):
-	# ALTER TABLE <TableName> <AlterType> ( <fieldName> <dType> <defaultVal>... )
+	# ALTER TABLE <TableName> ADD <fieldName> <dType> <defaultVal>
+	# ALTER TABLE <TableName> DROP <fieldName>
+	# ALTER TABLE <TableName> CHANGE <fieldName> <newFieldName> <dType>
 	Type = commandArr[1]
 	name = str(commandArr[2]).upper()
 	AlterType = str(commandArr[3])
@@ -142,21 +139,17 @@ def DecodeAlterCommand(commandArr):
 	if Type == "TABLE":
 		table = TABLES[name]
 		if AlterType == "ADD":
-			for i in range(
-					commandArr.index("(") + 1,
-					commandArr.index(")"), 3
-					):
-				table.addColumn(commandArr[i], commandArr[i+1])
-				for n in table.columns[list(table.columns.keys())[0]]["Values"]:
-					table.columns[commandArr[i]]["Values"].append(commandArr[i+2])
+			table.addColumn(commandArr[4], commandArr[5])
+			for n in table.columns[list(table.columns.keys())[0]]["Values"]:
+				table.columns[commandArr[4]]["Values"].append(commandArr[6])
 
 		elif AlterType == "DROP":
-			for i in range(
-					commandArr.index("(") + 1,
-					commandArr.index(")"), 1
-					):
-				table.dropColumn(commandArr[i])
+			table.dropColumn(commandArr[4])
 
+		elif AlterType == "CHANGE":
+			table.addColumn(commandArr[5], commandArr[6])
+			table.columns[commandArr[5]]["Values"] = table.columns[commandArr[4]]["Values"]
+			table.dropColumn(commandArr[4])
 
 	return Type, name, AlterType
 

@@ -38,13 +38,13 @@ class Params():
 
 class Type():
 	def __init__(self, charLimit):
-  self.valTypes = {
-		"BOOL" : ['1', '0', 'true', 'false'],
-		"INT" : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-		"DATE" : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '/'],
-		"CHAR" : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
-		"VARCHAR" : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%', '^', '&', '*', '-', '+', '=', '_'],
-		}
+		self.valTypes = {
+			"BOOL" : ['1', '0', 'true', 'false'],
+			"INT" : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+			"DATE" : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '/'],
+			"CHAR" : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+			"VARCHAR" : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%', '^', '&', '*', '-', '+', '=', '_'],
+			}
 
 
 # Main Classes
@@ -69,12 +69,15 @@ class Table():
 				else:
 					RaiseValueError("Incorrect DataType used in Values!")
 
-	def check(valType, val):
+	def check(self, valType, val):
 		for i in val:
 			print(i)
 			if ArrayContains(Type.valTypes[valType], i) == False:
 				return False
 		return True
+
+	def dropColumn(self, colName):
+		del self.columns[colName]
 
 # Helper Functions
 def ArrayContains(arr, obj, sel="null"):
