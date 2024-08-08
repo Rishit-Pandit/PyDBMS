@@ -79,8 +79,17 @@ class Table():
 	def dropColumn(self, colName):
 		del self.columns[colName]
 
+
+	def hasColumn(self, colName):
+		return ArrayContains(list(self.columns.keys()), colName)
+
+
 # Helper Functions
 def ArrayContains(arr, obj, sel="null"):
+	'''
+	arr: the array to check
+	obj: the object to find
+	'''
 	contained = False
 	for i in  arr:
 		if i == obj or i == sel:

@@ -17,15 +17,15 @@ holds 3 things - The Data Type, The Values or `Records` and the Extra Parameters
 For example:
 ``` python
 Table = {
-  Field1: {
-    DataType: dType, 
-    Values: [Val1, Val2, Val3], 
-    Params: params
+  'Field1': {
+    'Type': 'dType', 
+    'Values': [Val1, Val2, Val3], 
+    'Params': [params]
     },
-  Field2: {
-    DataType: dType, 
-    Values: [Val4, Val5, Val6], 
-    Params: params
+  'Field2': {
+    'Type': 'dType', 
+    'Values': [Val4, Val5, Val6], 
+    'Params': [params]
     },
   }
 ```
@@ -64,9 +64,8 @@ INSERT TABLE <TableName> ( <val1> <val2> <val3>... )
 This command is used to show the table with its Fields and Records in a Separate Window in chronological order.  
 The SELECT command is used as such:  
 ```
-SELECT * FROM TABLE <TableName>
+SELECT TABLE <TableName> ( <field1> <field2> <field3>... )
 ```
-*NOTE: Field Selective Data Retreival has not yet been implemented so only the full table can be shown at once*
 
 #### SAVE
 
@@ -97,7 +96,11 @@ ALTER TABLE <TableName> CHANGE <fieldName> <newFieldName> <dType>
 
 
 ### Changelog
-#### V2 - 05/08/2024
+#### V2.1 - 05/08/2024
 + Added the `ALTER ... CHANGE ...` command
 + Removed some redundant requirements for commands
 + Added Multi-Line Command / Multi-Command Support
+#### V2.2 - 08/08/2024
++ Field Selective Data Retrieval has been implemented
++ Unit Testing is being introduced (Currently for *Create Table* function only)
++ Fixed some small bugs / errors

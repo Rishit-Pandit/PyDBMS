@@ -2,6 +2,16 @@ from utils import Table
 from utils import TABLES, REPORTS, FORMS
 
 
+def createTable(name, fieldsArr):
+	table = Table(name)
+	for i in range(
+			fieldsArr.index("(") + 1,
+			fieldsArr.index(")"), 2
+			):
+		table.addColumn(fieldsArr[i], fieldsArr[i+1])
+	return table
+
+
 def DecodeCreateCommand(commandArr):
 	# CREATE TABLE <TableName> ( <field1> <dType1> <field2> <dType2>... )
 	createType = commandArr[1]
@@ -10,12 +20,7 @@ def DecodeCreateCommand(commandArr):
 	print(commandArr)
 
 	if createType == "TABLE":
-		table = Table(name)
-		for i in range(
-				commandArr.index("(") + 1,
-				commandArr.index(")"), 2
-				):
-			table.addColumn(commandArr[i], commandArr[i+1])
+		table = createTable(name, commandArr[3:])
 		TABLES[name] = table
 
 
@@ -49,14 +54,19 @@ def DecodeInsertCommand(commandArr):
 
 
 def DecodeSelectCommand(commandArr):
-	# SELECT <fields> FROM TABLE <tableName>
-	selectType = commandArr[commandArr.index("FROM") + 1]
-	name = str(commandArr[commandArr.index("FROM") + 2]).upper()
+	# SELECT TABLE <tableName> ( <field1> <field2> ... )
+	selectType = commandArr[1]
+	name = str(commandArr[2]).upper()
 	OUTPUT = []
 
 	if selectType == "TABLE":
-		table = TABLES[name]
-		keys = list(table.columns.keys())
+		table = TABLES[name]		
+		keys = []
+		for i in range(
+				commandArr.index("(") + 1,
+				commandArr.index(")")
+				):
+			keys.append(commandArr[i])
 		OUTPUT.append(keys)
 		for i in range(len(table.columns[keys[0]]['Values'])):
 			x = []
@@ -147,6 +157,8 @@ def DecodeAlterCommand(commandArr):
 			table.dropColumn(commandArr[4])
 
 		elif AlterType == "CHANGE":
+			if table.hasColumn(commandArr[4]) == False:
+				return Type, name, AlterType
 			table.addColumn(commandArr[5], commandArr[6])
 			table.columns[commandArr[5]]["Values"] = table.columns[commandArr[4]]["Values"]
 			table.dropColumn(commandArr[4])
