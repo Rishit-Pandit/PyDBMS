@@ -59,10 +59,10 @@ The INSERT command is used as such:
 INSERT INTO TABLE <TableName> ( <val1> <val2> <val3>... )
 ```
 
-#### SELECT
+#### SHOW
 
 This command is used to show the table with its Fields and Records in a Separate Window in chronological order.  
-The SELECT command is used as such:  
+The SHOW command is used as such:  
 ```
 SHOW TABLE <TableName> ( <field1> <field2> <field3>... )
 SHOW TABLE <TableName> # for all the fields and in default order
