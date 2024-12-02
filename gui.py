@@ -73,11 +73,14 @@ class MainView(tk.Frame):
 			elif commandArr[0] == "CREATE":
 				classType, name = DecodeCreateCommand(commandArr)
 				self.OUTPUT.append(f"Created {classType} {name}...")
+			elif commandArr[0] == "DUPLICATE":
+				classType, name = DecodeDuplicateCommand(commandArr)
+				self.OUTPUT.append(f"Created {classType} {name}...")
 			elif commandArr[0] == "INSERT":
 				classType, name = DecodeInsertCommand(commandArr)
 				self.OUTPUT.append(f"Inserted Values in {classType} {name}...")
-			elif commandArr[0] == "SELECT":
-				classType, name, OUTPUT_ = DecodeSelectCommand(commandArr)
+			elif commandArr[0] == "SHOW":
+				classType, name, OUTPUT_ = DecodeShowCommand(commandArr)
 				self.OUTPUT.append(f"Displaying Values of {classType} {name}...")
 				showResult(OUTPUT_, name)
 			elif commandArr[0] == "SAVE":
@@ -91,7 +94,7 @@ class MainView(tk.Frame):
 				self.OUTPUT.append(f"Loading Values from {filename} into file {classType} {name} ...")
 
 		for i in cmdArr:
-			classifyCommand(i.split(' '))
+			classifyCommand(processCommandStr(i))
 
 			self.OutputLog.delete("1.0", "end")
 			self.OutputLog.pack()

@@ -1,4 +1,4 @@
-from utils import Table
+from utils import Table, ArrayContains
 from utils import TABLES, REPORTS, FORMS
 
 
@@ -28,10 +28,34 @@ def DecodeCreateCommand(commandArr):
 	return createType, name
 
 
-def DecodeInsertCommand(commandArr):
-	# INSERT TABLE <tableName> ( <val1> <val2> <val3>... )
-	insertType = commandArr[1]
+def DecodeDuplicateCommand(commandArr):
+	# DUPLICATE TABLE <TableName> FROM <TableName> <EMPTY/FILL>
+	dupType = commandArr[1]
 	name = str(commandArr[2]).upper()
+	oldName = str(commandArr[4]).upper()
+	fill = str(commandArr[5]).upper()
+
+	print(commandArr)
+
+	if dupType == "TABLE":
+		if fill == "FILL":
+			table = TABLES[oldName]
+			TABLES[name] = table
+		elif fill == "EMPTY":
+			table = TABLES[oldName]
+			for key in table.columns.keys():
+				table.columns[key]["Values"] = []
+			TABLES[name] = table
+
+
+	print(TABLES[name].columns)
+	return dupType, name
+
+
+def DecodeInsertCommand(commandArr):
+	# INSERT INTO TABLE <tableName> ( <val1> <val2> <val3>... )
+	insertType = commandArr[2]
+	name = str(commandArr[3]).upper()
 	
 	if insertType == "TABLE":
 		table = TABLES[name]
@@ -53,20 +77,23 @@ def DecodeInsertCommand(commandArr):
 	return insertType, name
 
 
-def DecodeSelectCommand(commandArr):
-	# SELECT TABLE <tableName> ( <field1> <field2> ... )
-	selectType = commandArr[1]
+def DecodeShowCommand(commandArr):
+	# SHOW TABLE <tableName> ( <field1> <field2> ... )
+	showType = commandArr[1]
 	name = str(commandArr[2]).upper()
 	OUTPUT = []
 
-	if selectType == "TABLE":
+	if showType == "TABLE":
 		table = TABLES[name]		
 		keys = []
-		for i in range(
-				commandArr.index("(") + 1,
-				commandArr.index(")")
-				):
-			keys.append(commandArr[i])
+		if not ArrayContains(commandArr, '('):
+			keys = list(table.columns.keys())
+		else:
+			for i in range(
+					commandArr.index("(") + 1,
+					commandArr.index(")")
+					):
+				keys.append(commandArr[i])
 		OUTPUT.append(keys)
 		for i in range(len(table.columns[keys[0]]['Values'])):
 			x = []
@@ -75,7 +102,7 @@ def DecodeSelectCommand(commandArr):
 			OUTPUT.append(x)
 
 
-	return selectType, name, OUTPUT
+	return showType, name, OUTPUT
 
 
 def DecodeSaveCommand(commandArr):

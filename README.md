@@ -53,10 +53,10 @@ CREATE TABLE <TableName> ( <field1> <dType1> <field2> <dType2> <field3> <dType3>
 
 #### INSERT
 
-This command is used to Insert Values into the respective Fields in a prexistant table.  
+This command is used to Insert Values into the respective Fields in an existing table.  
 The INSERT command is used as such:  
 ```
-INSERT TABLE <TableName> ( <val1> <val2> <val3>... )
+INSERT INTO TABLE <TableName> ( <val1> <val2> <val3>... )
 ```
 
 #### SELECT
@@ -64,12 +64,13 @@ INSERT TABLE <TableName> ( <val1> <val2> <val3>... )
 This command is used to show the table with its Fields and Records in a Separate Window in chronological order.  
 The SELECT command is used as such:  
 ```
-SELECT TABLE <TableName> ( <field1> <field2> <field3>... )
+SHOW TABLE <TableName> ( <field1> <field2> <field3>... )
+SHOW TABLE <TableName> # for all the fields and in default order
 ```
 
 #### SAVE
 
-This command saves a Table in the Specified file in `.CSV` format.  
+This command saves a Table in the Specified file in `.csv` format.  
 The SAVE command is used as such:  
 ```
 SAVE TABLE <TableName> FILE <FileName>
@@ -78,7 +79,7 @@ SAVE TABLE <TableName> FILE <FileName>
 
 #### LOAD
 
-This command loads a Table from the Specified file in `.CSV` format.  
+This command loads a Table from the Specified file in `.csv` format.  
 The LOAD command is used as such:  
 ```
 LOAD TABLE <TableName> FILE <FileName>
@@ -94,13 +95,27 @@ ALTER TABLE <TableName> DROP <fieldName>
 ALTER TABLE <TableName> CHANGE <fieldName> <newFieldName> <dType>
 ```
 
+#### DUPLICATE
+
+This command is used to Duplicate an existing table, with the FILL tag the table is cloned and with the EMPTY tag only the table structure is cloned.  
+The INSERT command is used as such:  
+```
+DUPLICATE TABLE <TableName> FROM <TableName> <EMPTY/FILL>
+```
+
 
 ### Changelog
 #### V2.1 - 05/08/2024
 + Added the `ALTER ... CHANGE ...` command
 + Removed some redundant requirements for commands
-+ Added Multi-Line Command / Multi-Command Support
++ Added Multiple Command Support in single Query (each command as a separate line)
 #### V2.2 - 08/08/2024
 + Field Selective Data Retrieval has been implemented
 + Unit Testing is being introduced (Currently for *Create Table* function only)
 + Fixed some small bugs / errors
+#### V2.3 - 02/12/2024
++ Added the `DUPLICATE TABLE ...` command
++ Improved Query Parsing, now `(value1    value2  value3)` can also be used (earlier only `( value1 value2 value3 )` could be used), i.e. spaces between words and parenthesis does not effect the command and spaces between words can be non uniform
++ Changed `INSERT TABLE <TableName> ...` to `INSERT INTO TABLE <TableName> ...`
++ Changed `SELECT TABLE <TableName> ...` to `SHOW TABLE <TableName> ...`
++ `SHOW TABLE <TableName>` now shows all the fields in their default order

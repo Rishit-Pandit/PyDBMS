@@ -85,16 +85,42 @@ class Table():
 
 
 # Helper Functions
-def ArrayContains(arr, obj, sel="null"):
+def ArrayContains(arr, obj):
 	'''
 	arr: the array to check
 	obj: the object to find
 	'''
 	contained = False
 	for i in  arr:
-		if i == obj or i == sel:
+		if i == obj:
 			contained = True
 			return True
 		else:
 			pass
 	return contained
+
+
+def processCommandStr(x):
+	'''
+	x: command string to process
+	'''
+	if x == None:
+		return
+	x = x.split(" ")
+	if ArrayContains(x, ''):
+		x = preProcessStr(x)
+	for i, o in enumerate(x):
+		if o[0] == '(' and o != "(":
+			x[i] = o[1:]
+			x.insert(i, "(")
+		elif o[-1] == ')' and o != ")":
+			x[i] = o[:-1]
+			x.insert(i+1, ")")
+	return x
+
+
+def preProcessStr(x):
+	for i in range(len(x)):
+		if ArrayContains(x, ''):
+			x.remove('')
+	return x
