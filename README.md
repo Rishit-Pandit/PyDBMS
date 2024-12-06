@@ -33,11 +33,8 @@ Table = {
 #### Data Types
 
 There are 5 Data Types:  
-* **BOOL** - 1,0, true,false
 * **INT** - 0-9
-* **DATE** - 0-9,/
-* **CHAR** - a-z
-* **VARCHAR** - a-z, 0-9, !, @, #, $, %, ^, &, *, -, +, =, _  
+* **STR** - a-z, 0-9, !, @, #, $, %, ^, &, *, -, +, =, _  
 
 
 ### Commands
@@ -47,7 +44,7 @@ There are 5 Data Types:
 This command is used to Create a Table with a certain Name and Fields with specified DataTypes.  
 The CREATE command is used as such:  
 ```
-CREATE TABLE <TableName> ( <field1> <dType1> <field2> <dType2> <field3> <dType3>... )
+CREATE TABLE <TableName> ( <field1> <dType1> <field2> <dType2> <field3> <dType3>... );
 ```
 *NOTE: Commas have not been yet implemented so it just uses spaces as delimitters*
 
@@ -56,7 +53,8 @@ CREATE TABLE <TableName> ( <field1> <dType1> <field2> <dType2> <field3> <dType3>
 This command is used to Insert Values into the respective Fields in an existing table.  
 The INSERT command is used as such:  
 ```
-INSERT INTO TABLE <TableName> ( <val1> <val2> <val3>... )
+INSERT INTO TABLE <tableName> FIELDS ( <field1> <field2> <field3>... ) VALUES ( <val1> <val2> <val3>... );
+INSERT INTO TABLE <tableName> VALUES ( <val1> <val2> <val3>... );
 ```
 
 #### SHOW
@@ -64,8 +62,9 @@ INSERT INTO TABLE <TableName> ( <val1> <val2> <val3>... )
 This command is used to show the table with its Fields and Records in a Separate Window in chronological order.  
 The SHOW command is used as such:  
 ```
-SHOW TABLE <TableName> ( <field1> <field2> <field3>... )
-SHOW TABLE <TableName> # for all the fields and in default order
+SHOW TABLE <TableName> ( <field1> <field2> <field3>... );
+SHOW TABLE <TableName>; # for all the fields and in default order
+SHOW TABLE <TableName> ( <field1> <field2> <field3>... ) WHERE <field> <opperation> <value>;
 ```
 
 #### SAVE
@@ -73,7 +72,7 @@ SHOW TABLE <TableName> # for all the fields and in default order
 This command saves a Table in the Specified file in `.csv` format.  
 The SAVE command is used as such:  
 ```
-SAVE TABLE <TableName> FILE <FileName>
+SAVE TABLE <TableName> FILE <FileName>;
 ```
 *NOTE: This command can only save one table per file.*
 
@@ -82,7 +81,7 @@ SAVE TABLE <TableName> FILE <FileName>
 This command loads a Table from the Specified file in `.csv` format.  
 The LOAD command is used as such:  
 ```
-LOAD TABLE <TableName> FILE <FileName>
+LOAD TABLE <TableName> FILE <FileName>;
 ```
 
 #### ALTER
@@ -90,9 +89,9 @@ LOAD TABLE <TableName> FILE <FileName>
 This command can add, change or drop (delete) a field from the table as specified.  
 The ALTER command is used as such: 
 ```
-ALTER TABLE <TableName> ADD <fieldName> <dType> <defaultVal>
-ALTER TABLE <TableName> DROP <fieldName>
-ALTER TABLE <TableName> CHANGE <fieldName> <newFieldName> <dType>
+ALTER TABLE <TableName> ADD <fieldName> <dType> <defaultVal>;
+ALTER TABLE <TableName> DROP <fieldName>;
+ALTER TABLE <TableName> CHANGE <fieldName> <newFieldName> <dType>;
 ```
 
 #### DUPLICATE
@@ -100,7 +99,7 @@ ALTER TABLE <TableName> CHANGE <fieldName> <newFieldName> <dType>
 This command is used to Duplicate an existing table, with the FILL tag the table is cloned and with the EMPTY tag only the table structure is cloned.  
 The INSERT command is used as such:  
 ```
-DUPLICATE TABLE <TableName> FROM <TableName> <EMPTY/FILL>
+DUPLICATE TABLE <TableName> FROM <TableName> <EMPTY/FILL>;
 ```
 
 
@@ -119,3 +118,8 @@ DUPLICATE TABLE <TableName> FROM <TableName> <EMPTY/FILL>
 + Changed `INSERT TABLE <TableName> ...` to `INSERT INTO TABLE <TableName> ...`
 + Changed `SELECT TABLE <TableName> ...` to `SHOW TABLE <TableName> ...`
 + `SHOW TABLE <TableName>` now shows all the fields in their default order
+#### V2.4 - 06/12/2024
++ Changed the command ending from a line break (`\n`) to a semicolon (`;`)
++ Introduced strings with `''` now `'first last'` has to be used instead of `first_last`
++ Added conditions to `SHOW` as `WHERE <field> <opperation> <value>`
++ Data Types have been reduced to just `INT` and `STR` and added some basic type handeling

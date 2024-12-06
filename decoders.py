@@ -1,4 +1,4 @@
-from utils import Table, ArrayContains
+from utils import Table, ArrayContains, processDataArr, condMet
 from utils import TABLES, REPORTS, FORMS
 
 
@@ -52,24 +52,47 @@ def DecodeDuplicateCommand(commandArr):
 	return dupType, name
 
 
-def DecodeInsertCommand(commandArr):
-	# INSERT INTO TABLE <tableName> ( <val1> <val2> <val3>... )
-	insertType = commandArr[2]
-	name = str(commandArr[3]).upper()
-	
+def DecodeInsertCommand(arr):
+	# INSERT INTO TABLE <tableName> FIELDS ( <field1> <field2> <field3>... ) VALUES ( <val1> <val2> <val3>... )
+	insertType = arr[2]
+	name = str(arr[3])
+
+	print(arr)
+
 	if insertType == "TABLE":
 		table = TABLES[name]
 		fillRow = []
-		for i in range(
-				commandArr.index("(") + 1,
-				commandArr.index(")")
-				):
-			fillRow.append(commandArr[i])
+		fillCol = []
+		if arr[4] == "FIELDS":
+			for i in range(
+					arr.index("(") + 1,
+					arr.index(")")
+					):
+				fillCol.append([arr[i], table.columns[arr[i]]["Type"]])
+			for i in range(
+					arr.index("(", arr.index("VALUES")) + 1,
+					arr.index(")", arr.index("VALUES"))
+					):
+				fillRow.append(arr[i])
+			
+		elif arr[4] == "VALUES":
+			for key in list(table.columns.keys()):
+				fillCol.append([key, table.columns[key]["Type"]])
+			for i in range(
+					arr.index("(") + 1,
+					arr.index(")")
+					):
+				fillRow.append(arr[i])
 		
 		print(fillRow)
-		for i in range(len(table.columns.keys())):
-			print(list(table.columns.keys()))
-			table.columns[list(table.columns.keys())[i]]["Values"].append(fillRow[i])
+		
+		try:
+			fillRow = processDataArr(fillRow, fillCol)
+		except Exception as e:
+			raise e
+
+		for i, data in enumerate(fillCol):
+			table.columns[data[0]]["Values"].append(fillRow[i])
 
 		TABLES[name] = table
 
@@ -78,15 +101,19 @@ def DecodeInsertCommand(commandArr):
 
 
 def DecodeShowCommand(commandArr):
-	# SHOW TABLE <tableName> ( <field1> <field2> ... )
+	# SHOW TABLE <tableName> ( <field1> <field2> ... ) WHERE <field> <cond> <value>
 	showType = commandArr[1]
 	name = str(commandArr[2]).upper()
 	OUTPUT = []
-
+	cond = ArrayContains(commandArr, "WHERE")
+	condition, whereLoc = [], 0
+	if cond:
+		whereLoc = commandArr.index("WHERE")
+		condition = [commandArr[whereLoc+1], commandArr[whereLoc+2], int(commandArr[whereLoc+3])]
 	if showType == "TABLE":
 		table = TABLES[name]		
 		keys = []
-		if not ArrayContains(commandArr, '('):
+		if commandArr[3] != "(":
 			keys = list(table.columns.keys())
 		else:
 			for i in range(
@@ -98,8 +125,13 @@ def DecodeShowCommand(commandArr):
 		for i in range(len(table.columns[keys[0]]['Values'])):
 			x = []
 			for key in keys:
-				x.append(table.columns[key]['Values'][i])
-			OUTPUT.append(x)
+				if cond:
+					if condMet(int(table.columns[condition[0]]['Values'][i]), condition[1:]):
+						x.append(table.columns[key]['Values'][i])
+				else:
+					x.append(table.columns[key]['Values'][i])
+			if len(x)>0:
+				OUTPUT.append(x)
 
 
 	return showType, name, OUTPUT

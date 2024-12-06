@@ -39,11 +39,8 @@ class Params():
 class Type():
 	def __init__(self, charLimit):
 		self.valTypes = {
-			"BOOL" : ['1', '0', 'true', 'false'],
 			"INT" : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-			"DATE" : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '/'],
-			"CHAR" : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
-			"VARCHAR" : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%', '^', '&', '*', '-', '+', '=', '_'],
+			"STR" : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%', '^', '&', '*', '-', '+', '=', '_'],
 			}
 
 
@@ -105,7 +102,9 @@ def processCommandStr(x):
 	x: command string to process
 	'''
 	if x == None:
-		return
+		return ''
+	if len(x) <= 0:
+		return ''
 	x = x.split(" ")
 	if ArrayContains(x, ''):
 		x = preProcessStr(x)
@@ -116,6 +115,16 @@ def processCommandStr(x):
 		elif o[-1] == ')' and o != ")":
 			x[i] = o[:-1]
 			x.insert(i+1, ")")
+		elif o[0] == "'" and o != "'":
+			x[i] = o[1:]
+			x.insert(i, "'")
+		elif o[-1] == "'" and o != "'":
+			x[i] = o[:-1]
+			x.insert(i+1, "'")
+		elif o[0] == "\n":
+			x[i] = o[1:]
+		elif o[-1] == "\n":
+			x[i] = o[:-1]
 	return x
 
 
@@ -124,3 +133,41 @@ def preProcessStr(x):
 		if ArrayContains(x, ''):
 			x.remove('')
 	return x
+
+def processDataArr(data, tags):
+	arr = []
+	data2 = data
+	for i in tags:
+		if i[1] == "STR":
+			arr.append(" ".join(data2[data2.index("'")+1 : data2.index("'", 1)]))
+			data2 = data2[data2.index("'", 1)+1 :]
+			print(data2)
+		elif i[1] == "INT":
+			try:
+				int(data2[0])
+			except Exception as e:
+				raise RaiseValueError('value not int')
+			arr.append(data2[0])
+			data2 = data2[1:]
+			print(data2)
+		else:
+			arr.append(data2[0])
+			data2 = data2[1:]
+			print(data2)
+	return arr
+
+def condMet(x, cond):
+	opp, val = cond
+	if opp == "=":
+		return x == val
+	elif opp == "!=":
+		return x != val
+	elif opp == ">":
+		print(type(val))
+		return x > val
+	elif opp == "<":
+		return x < val
+	elif opp == ">=":
+		return x >= val
+	elif opp == "<=":
+		return x <= val

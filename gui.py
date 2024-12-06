@@ -2,16 +2,7 @@ from utils import *
 from decoders import *
 from tkinter import *
 import tkinter as tk
-import os
 
-
-if os.path.isfile('save.txt'):
-    with open('save.txt', 'r') as saved:
-        tempDatasets = saved.read()
-        tempDatasets = tempDatasets.split(',')
-        datasets = [x for x in tempDatasets if x.strip()]
-
-file = ""
 
 class ResultsView(tk.Frame):
 	def __init__(self, master, name):
@@ -63,10 +54,11 @@ class MainView(tk.Frame):
 
 	def executeCommand(self):
 		self.query = self.InputSpace.get("1.0", "end")
-		cmdArr = self.query.split('\n')
-		cmdArr.remove('')
+		cmdArr = self.query.split(';')
 		
-		def classifyCommand(commandArr):		
+		def classifyCommand(commandArr):
+			if len(commandArr) <= 0:
+				return
 			if ArrayContains(commandArr, "QUIT"):
 				self.OUTPUT.append("Exiting...")
 				quit()
@@ -77,8 +69,11 @@ class MainView(tk.Frame):
 				classType, name = DecodeDuplicateCommand(commandArr)
 				self.OUTPUT.append(f"Created {classType} {name}...")
 			elif commandArr[0] == "INSERT":
-				classType, name = DecodeInsertCommand(commandArr)
-				self.OUTPUT.append(f"Inserted Values in {classType} {name}...")
+				try:
+					classType, name = DecodeInsertCommand(commandArr)
+					self.OUTPUT.append(f"Inserted Values in {classType} {name}...")
+				except Exception as e:
+					self.OUTPUT.append(f"Couldn't insert the values")
 			elif commandArr[0] == "SHOW":
 				classType, name, OUTPUT_ = DecodeShowCommand(commandArr)
 				self.OUTPUT.append(f"Displaying Values of {classType} {name}...")
